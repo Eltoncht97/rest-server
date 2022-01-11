@@ -43,7 +43,7 @@ const createProduct = async (req, res = response ) => {
 
   // generar la data
   const data = {
-    body,
+    ...body,
     name,
     user: req.usuario._id
   }

@@ -16,8 +16,8 @@ router.get('/:id',[
 router.post('/',[
   validarJWT,
   check('name', 'El nombre es requerido').not().isEmpty(),
-  check('category', 'La categoria es requerida').not().isEmpty(),
   check('category', 'No es un ID de Mongo').isMongoId(),
+  check('category', 'La categoria es requerida').not().isEmpty(),
   check('category').custom(existCategoryById),
   validarCampos
 ], createProduct)

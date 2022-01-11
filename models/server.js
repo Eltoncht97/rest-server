@@ -4,6 +4,7 @@ const userRouter = require("../routes/user");
 const authRouter = require("../routes/auth");
 const productsRouter = require("../routes/products");
 const categoriesRouter = require("../routes/categories");
+const searchRouter = require("../routes/search");
 const dbConnection = require("../database/config");
 
 class Server{
@@ -12,6 +13,7 @@ class Server{
     this.port = process.env.PORT;
     this.paths = {
       usuarios: '/api/usuarios',
+      search: '/api/search',
       auth: '/api/auth',
       categories: '/api/categories',
       products: '/api/products',
@@ -47,6 +49,7 @@ class Server{
     this.app.use(this.paths.auth, authRouter);
     this.app.use(this.paths.categories, categoriesRouter);
     this.app.use(this.paths.products, productsRouter);
+    this.app.use(this.paths.search, searchRouter);
   }
 
   listen(){
