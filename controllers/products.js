@@ -9,7 +9,8 @@ const getProducts = async ( req, res = response ) => {
   const [ total, products ] = await Promise.all([
     Product.countDocuments(query),
     Product.find(query)
-      .populate(['user', 'category'])
+      .populate('user', 'nombre')
+      .populate('category', 'name')
       .skip(Number(start))
       .limit(Number(limit))
   ])
@@ -23,12 +24,13 @@ const getProducts = async ( req, res = response ) => {
 const getProduct = async (req, res = response) => {
   const {id} = req.params
 
-  const product = await Product.findById(id).populate('category')
+  const product = await Product.findById(id).populate('user', 'nombre').populate('category', 'name')
 
   res.json(product)
 }
 
 const createProduct = async (req, res = response ) => {
+  const { state, user, ...body } = req.body;
   const name = req.body.name.toUpperCase()
 
   const productDB = await Product.findOne({ name })
@@ -41,7 +43,7 @@ const createProduct = async (req, res = response ) => {
 
   // generar la data
   const data = {
-    ...req.body,
+    body,
     name,
     user: req.usuario._id
   }
@@ -55,21 +57,12 @@ const createProduct = async (req, res = response ) => {
 
 const updateProduct = async ( req, res = response ) => {
   const id = req.params.id;
-  let name;
-  let data;
+  const { state, user, ...data } = req.body
   
-  if(req.body.name) {
-    name = req.body.name.toUpperCase();
-    data = {
-      ...req.body,
-      name
-    }
-  }else {
-    data = {
-      ...req.body
-    }
+  
+  if(data.name) {
+    data.name = data.name.toUpperCase();
   }
-
 
   const product = await Product.findByIdAndUpdate( id, data , { new: true } );
 
